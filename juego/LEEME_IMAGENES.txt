@@ -1,0 +1,89 @@
+CÓMO CAMBIAR LOS DIBUJOS TEMPORALES POR TUS IMÁGENES
+=====================================================
+
+Todas las cartas, casillas, fichas, botones y paneles de las actividades están
+dibujados con código mientras tú preparas las imágenes. Para reemplazar uno:
+
+  1. Crea la carpeta  assets/UI/
+  2. Guarda tu PNG con el NOMBRE EXACTO de la tabla (ej: assets/UI/btn_verificar.png)
+  3. Recarga el juego (Ctrl+F5). Si el archivo no existe, se usa el dibujo temporal.
+
+En la carpeta  plantillas_UI/  están los dibujos temporales como PNG, con el
+tamaño exacto recomendado, para que los uses de guía (NO los copies a assets/UI
+si no quieres que se queden como definitivos).
+
+TIPO "image" (tamaño fijo)  -> se ajusta al tamaño del juego (1280x720).
+TIPO "panel" (se estira)    -> 9 cortes: las esquinas no se deforman. El panel
+                               se estira solo en el centro. Esquina = 40 px.
+                               Si tu imagen tiene otra escala, ajusta 'slice' y
+                               'texScale' en src/ui.js (catálogo UI).
+
+NOMBRE               TIPO    TAMAÑO RECOMENDADO   DÓNDE SE USA
+-------------------  ------  -------------------  --------------------------------------
+carta_reverso        image   260 x 200            Memorama: parte de atrás de la carta
+carta_frente         image   260 x 200            Memorama: marco de la carta volteada
+casilla              panel   256 x 192            Rompecabezas: espacios donde se sueltan las palabras
+casilla_error        panel   256 x 192            Rompecabezas: espacios cuando la frase está mal
+ficha                panel   256 x 192            Rompecabezas y Une: ficha de palabra
+ficha_sel            panel   256 x 192            Une: ficha de palabra seleccionada
+ficha_ok             panel   256 x 192            Une: ficha de palabra ya unida (verde)
+casilla_letra        image   120 x 120            Letra escondida: cuadro de la palabra
+casilla_letra_ok     image   120 x 120            Letra escondida: cuadro con la letra correcta
+boton_letra          image   132 x 132            Letra escondida: botones de letras
+btn_verificar        image   440 x 120            Rompecabezas: botón Verificar (el texto va dentro de la imagen)
+btn_escuchar         image   400 x 120            Letra escondida: botón Escuchar (texto dentro de la imagen)
+panel_puntos         panel   256 x 192            Letra escondida y Une: panel de puntos
+panel_parejas        panel   256 x 192            Memorama: contador de parejas (3 / 16)
+panel_final          panel   256 x 192            Todas las actividades: cuadro de resultados con estrellas
+estrella             image   192 x 192            Estrella ganada (resultados y menú de Actividades)
+estrella_vacia       image   192 x 192            Estrella sin ganar
+btn_reintentar       image   460 x 120            Resultados: botón "Jugar otra vez" (texto dentro de la imagen)
+btn_menu             image   460 x 120            Resultados: botón "Actividades" (texto dentro de la imagen)
+btn_leer_otra        image   460 x 120            Resultados de un cuento: botón "Leer otra vez"
+btn_cuentos          image   460 x 120            Resultados de un cuento: botón "Cuentos"
+btn_terminar_lectura image   600 x 120            Cuento: botón "¡Terminé de leer!" (aparece en la última página)
+
+Nota: en 'btn_verificar' y 'btn_escuchar' la palabra debe venir dibujada en tu
+imagen. En 'ficha', 'casilla', 'carta_frente', etc. el texto/letra lo pone el
+juego encima.
+
+LETRAS DEL MEMORAMA (Mayúscula con minúscula)
+---------------------------------------------
+  assets/Letras/mayus/A.png ... Z.png      (Ñ -> enie.png)
+  assets/Letras/minus/a.png ... z.png      (ñ -> enie.png)
+
+Se separan en dos carpetas para que no se confundan "A" y "a" en Windows.
+Cada partida usa 16 letras al azar (cambia 'pairsPerGame' (16 parejas = 32 cartas) en
+src/scenes/memorama.js). Si falta una imagen, esa carta muestra la letra con texto.
+Tamaño sugerido: cuadrada, ej. 300 x 300, fondo transparente.
+
+SISTEMA DE ESTRELLAS (todas las actividades)
+--------------------------------------------
+Al terminar, cada actividad muestra de 1 a 3 estrellas (terminar = mínimo 1).
+El mejor resultado se guarda en el navegador y aparece como estrellas bajo cada
+tarjeta del menú de Actividades.
+
+  Sopa de letras     aciertos vs. selecciones fallidas
+  Letra escondida    letras correctas vs. letras equivocadas
+  Une palabra        parejas vs. errores
+  Rompecabezas       frases vs. verificaciones incorrectas
+                     (3 estrellas: 85 % de aciertos o más, 2: 60 % o más, 1: menos)
+  Memorama           3 estrellas: hasta 1.5 intentos por pareja; 2: hasta 2.5; 1: más
+  Burbujas           3 estrellas: 5 rondas o más; 2: 3 o 4 rondas; 1: menos
+                     (el juego termina al quedarse sin vidas)
+
+Los umbrales están en cada escena (starsFromAccuracy en src/stars.js y calculateStars
+en memorama.js) por si quieres hacerlos más fáciles o más difíciles.
+
+VERIFICACIÓN DE LECTURA DE LOS CUENTOS
+--------------------------------------
+Al llegar a la última página (habiendo pasado por todas las anteriores) aparece el
+botón "¡Terminé de leer!". Lleva a 3 preguntas de comprensión del cuento:
+  3 correctas = 3 estrellas · 2 correctas = 2 estrellas · 0 o 1 correcta = 1 estrella.
+Las estrellas de cada cuento se ven bajo su tarjeta en el menú Cuentos.
+Las preguntas están en src/scenes/quizzes.js (fáciles de editar o ampliar).
+
+PROGRESO
+--------
+Las estrellas y récords solo viven mientras el juego está abierto: al recargar la
+página o pulsar "Reiniciar juego" en la página web, todo vuelve a empezar.

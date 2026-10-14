@@ -1,0 +1,3 @@
+Coloca aqui la carpeta "assets" del juego (juego/assets/...), igual que en el proyecto original.
+La pagina debe abrirse por HTTP (servidor local o hosting), no con doble clic en el archivo:
+  python -m http.server 8000   ->   http://localhost:8000/jugar.html
